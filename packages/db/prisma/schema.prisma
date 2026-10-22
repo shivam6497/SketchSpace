@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id          String   @id @default(cuid())
+  clerkUserId String   @unique
+  displayName String
+  avatarUrl   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  ownedRooms  Room[]       @relation("RoomOwner")
+  memberships RoomMember[]
+
+  @@index([clerkUserId])
+}
+
+model Room {
+  id        String  @id @default(cuid())
+  name      String
+  createdBy String
+  isPublic  Boolean @default(false)
+
+  yjsSnapshot Bytes?
+  elements    Json   @default("[]")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner   Profile      @relation("RoomOwner", fields: [createdBy], references: [clerkUserId])
+  members RoomMember[]
+
+  @@index([createdBy])
+}
+
+model RoomMember {
+  id          String   @id @default(cuid())
+  roomId      String
+  clerkUserId String
+  role        Role     @default(EDITOR)
+  joinedAt    DateTime @default(now())
+
+  room    Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  profile Profile @relation(fields: [clerkUserId], references: [clerkUserId], onDelete: Cascade)
+
+  @@unique([roomId, clerkUserId])
+  @@index([clerkUserId])
+  @@index([roomId])
+}
+
+enum Role {
+  OWNER
+  EDITOR
+  VIEWER
+}
