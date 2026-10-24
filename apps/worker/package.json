@@ -1,0 +1,25 @@
+{
+  "name": "@sketchspace/worker",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "dotenv -e ../../.env -- tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sketchspace/db": "workspace:*",
+    "@sketchspace/types": "workspace:*",
+    "bullmq": "^5.0.0",
+    "dotenv": "^16.0.0",
+    "ioredis": "^5.3.0",
+    "yjs": "^13.6.0"
+  },
+  "devDependencies": {
+    "@sketchspace/typescript-config": "workspace:*",
+    "@types/node": "^20.0.0",
+    "dotenv-cli": "^11.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.4.0"
+  }
+}
